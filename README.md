@@ -44,7 +44,7 @@ And constructed with the following guidelines:
 * New additions without breaking backward compatibility bumps the minor (and resets the patch)
 * Bug fixes and misc changes bumps the patch
 
-For more information on SemVer, visit ["SemVer"](http://semver.org/](http://semver.org/).
+For more information on SemVer, visit ["SemVer"](http://semver.org/).
 
 ## License
 Copyright (c) 2015 Onzeway
