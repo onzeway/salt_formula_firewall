@@ -1,0 +1,17 @@
+{## 
+Setup variable using grains['os_family'] based logic, only add key:values here
+that differ from whats in defaults.yaml
+##}
+{% set firewall = salt['grains.filter_by']({
+    'Debian': {
+      'package': 'iptables',
+      'rules_path': '/etc/network/if-pre-up.d/iptables'
+    }
+    ,'RedHat': {
+      'package': 'iptables',
+      'rules_path': '/etc/sysconfig/iptables'
+    }
+  }
+  , grain="os_family"
+  , merge=salt['pillar.get']('firewall:lookup'))
+%}

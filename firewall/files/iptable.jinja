@@ -1,0 +1,29 @@
+# Managed By SALT
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+
+# Accept all connexion from localhost
+-A INPUT -i lo -j ACCEPT
+# reject all connection to 127.0.0.0/8 that are not coming from loopback interface
+-A INPUT ! -i lo -d 127.0.0.0/8 -j DROP
+
+# Don't drop connection already established to server.
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Allow outgoing connections
+-A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+
+# Drop ICMP requests
+-A INPUT -p icmp -m icmp --icmp-type 8 -j DROP
+
+#USER DEFINED INCOMING RULES
+{% for name, service_rule in rules.get('incoming', {}).iteritems() -%}
+-A INPUT
+{%- if proto in service_rule %} --protocol {{ service_rule.get('protocol') }}{% endif -%}
+{%- if source in service_rule %} -source {{ service_rule.get('source') }}{% endif -%}
+{%- if port in service_rule %} --destination-port {{ service_rule.get('port') }}{% endif %} -j ACCEPT # rule {{ name }}
+{%- endfor %}
+
+COMMIT
