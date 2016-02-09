@@ -4,16 +4,17 @@ firewall:
     version: '1.*'
     rules_path: '/etc/network/if-pre-up.d/iptables'
   rules:
-    http:
-      port: '80'
-      protocol: 'tcp'
-      source: '192.168.0.0/24'
-    https:
-      port: '443'
-      protocol: 'tcp'
-      source: '192.168.0.0/24'
-    whitelisting_ip:
-      source: '212.24.32.17/32'
-    whitelisted_service:
-      port: '22'
-      protocol: 'tcp'
+    incoming:
+      http:
+        port: '80'
+        protocol: 'tcp'
+        source: '192.168.0.0/24'
+      https:
+        port: '443'
+        protocol: 'tcp'
+        source: '192.168.0.0/24'
+      whitelisting_ip:
+        source: '212.24.32.17/32'
+      whitelisted_service:
+        port: '22'
+        protocol: 'tcp'

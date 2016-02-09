@@ -21,9 +21,9 @@
 #USER DEFINED INCOMING RULES
 {% for name, service_rule in rules.get('incoming', {}).iteritems() -%}
 -A INPUT
-{%- if proto in service_rule %} --protocol {{ service_rule.get('protocol') }}{% endif -%}
-{%- if source in service_rule %} -source {{ service_rule.get('source') }}{% endif -%}
-{%- if port in service_rule %} --destination-port {{ service_rule.get('port') }}{% endif %} -j ACCEPT # rule {{ name }}
-{%- endfor %}
+{%- if 'protocol' in service_rule %} --protocol {{ service_rule.get('protocol') }}{% endif -%}
+{%- if 'source' in service_rule %} --source {{ service_rule.get('source') }}{% endif -%}
+{%- if 'port' in service_rule %} --destination-port {{ service_rule.get('port') }}{% endif %} -j ACCEPT
+{% endfor %}
 
 COMMIT

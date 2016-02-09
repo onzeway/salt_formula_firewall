@@ -5,7 +5,7 @@ that differ from whats in defaults.yaml
 {% set firewall = salt['grains.filter_by']({
     'Debian': {
       'package': 'iptables',
-      'rules_path': '/etc/network/if-pre-up.d/iptables'
+      'rules_path': '/etc/network/iptables.up.rules'
     }
     ,'RedHat': {
       'package': 'iptables',

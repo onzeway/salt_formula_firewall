@@ -7,13 +7,13 @@ firewall_rules:
     - group: root
     - mode: 755
     - context:
-        rules: {{ firewall.get('rules', {}) }}
+        rules: {{ salt['pillar.get']('firewall:rules', {}) }}
     - source: salt://firewall/files/iptables.jinja
     - template: jinja
 
 firewall_rules_apply:
   cmd.wait:
-    - name: iptables-restore < {{ firewall.get('rules', {}) }}
+    - name: iptables-restore < {{ firewall.get('rules_path') }}
     - watch:
       - file: firewall_rules
     - require:
