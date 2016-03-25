@@ -1,20 +1,34 @@
 firewall:
+  # Wake up interface
+  interface: eth0
+
+  # Redefine base formula data
   lookup:
     package: 'iptables'
     version: '1.*'
     rules_path: '/etc/network/if-pre-up.d/iptables'
+
+  # Firewall rules
   rules:
+    icmp:
+      authorize: false
+      whitelist:
+        - '192.168.0.0/24'
     incoming:
       http:
+        interface: 'eth0'
         port: '80'
         protocol: 'tcp'
         source: '192.168.0.0/24'
       https:
+        interface: 'eth0'
         port: '443'
         protocol: 'tcp'
         source: '192.168.0.0/24'
       whitelisting_ip:
+        interface: 'eth0'
         source: '212.24.32.17/32'
       whitelisted_service:
+        interface: 'eth1'
         port: '22'
         protocol: 'tcp'

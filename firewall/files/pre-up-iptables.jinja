@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ $IFACE != '{{ interface }}' ]; then
+exit
+fi
+
+/sbin/iptables-restore < {{ rule_path }}

@@ -15,13 +15,24 @@
 # Allow outgoing connections
 -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
 
+{% for whitelisted_ip in rules.get('icmp', {}).get('whitelist', []) -%}
+{% if loop.first -%}
+# Autorize ICMP request from whitelisted
+{%- endif %}
+-A INPUT --source {{ whitelisted_ip }} -p icmp -m icmp --icmp-type 8 -j ACCEPT
+{% endfor %}
+
+{% if false == rules.get('icmp', {}).get('authorize', false) -%}
 # Drop ICMP requests
 -A INPUT -p icmp -m icmp --icmp-type 8 -j DROP
+{% endif %}
 
 #USER DEFINED INCOMING RULES
-{% for name, service_rule in rules.get('incoming', {}).iteritems() -%}
+{% for name, service_rule in rules.get('incoming', {}).items() -%}
+#Service : {{ name }}
 -A INPUT
 {%- if 'protocol' in service_rule %} --protocol {{ service_rule.get('protocol') }}{% endif -%}
+{%- if 'interface' in service_rule %} --in-interface {{ service_rule.get('interface') }}{% endif -%}
 {%- if 'source' in service_rule %} --source {{ service_rule.get('source') }}{% endif -%}
 {%- if 'port' in service_rule %} --destination-port {{ service_rule.get('port') }}{% endif %} -j ACCEPT
 {% endfor %}
