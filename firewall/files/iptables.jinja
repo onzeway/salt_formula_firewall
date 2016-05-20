@@ -5,6 +5,7 @@
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -o {{ forward_interfaces.get('destination', 'eth0') }} -j MASQUERADE
 
 COMMIT
 {%- endif %}

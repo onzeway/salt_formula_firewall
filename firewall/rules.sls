@@ -35,18 +35,18 @@ firewall_rules_startup:
 
 {%- if salt['pillar.get']('firewall:rules:forwarding:enable', false) %}
 {%- set forward_value=1 %}
-{%- else%}
+{%- else %}
 {%- set forward_value=0 %}
 {%- endif %}
 
 net.ipv4.conf.default.forwarding:
   sysctl.present:
-    - value: 1
+    - value: {{ forward_value }}
 
 net.ipv4.conf.all.forwarding:
   sysctl.present:
-    - value: 1
+    - value: {{ forward_value }}
 
 /proc/sys/net/ipv4/ip_forward:
   file.managed:
-    - contents: 1
+    - contents: {{ forward_value }}
