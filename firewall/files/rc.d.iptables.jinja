@@ -1,1 +1,5 @@
+#!/bin/sh -e
+
 /sbin/iptables-restore < {{ rule_path }}
+
+exit 0

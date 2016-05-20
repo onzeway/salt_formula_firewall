@@ -1,4 +1,14 @@
 # Managed By SALT
+{% if forwarding -%}
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+
+COMMIT
+{%- endif %}
+
 *filter
 :INPUT DROP [0:0]
 :FORWARD DROP [0:0]
@@ -40,7 +50,5 @@
 {% if forwarding -%}
 -A FORWARD -o {{ forward_interfaces.get('destination', 'eth0') }} -i {{ forward_interfaces.get('source', 'eth1') }} -s {{ forward_interfaces.get('source_network', '0.0.0.0/0') }} -m conntrack --ctstate NEW -j ACCEPT
 -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
--t nat -F POSTROUTING
--t nat -A POSTROUTING -o {{ forward_interfaces.get('destination', 'eth0') }} -j MASQUERADE
 {% endif %}
 COMMIT

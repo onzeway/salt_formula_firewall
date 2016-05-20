@@ -8,6 +8,8 @@ firewall_rules:
     - mode: 644
     - context:
         rules: {{ salt['pillar.get']('firewall:rules', {}) }}
+        forwarding: {{ salt['pillar.get']('firewall:rules:forwarding:enable', false) }}
+        forward_interfaces: {{ salt['pillar.get']('firewall:rules:forwarding:interfaces', {}) }}
     - source: salt://firewall/files/iptables.jinja
     - template: jinja
 
@@ -21,13 +23,13 @@ firewall_rules_apply:
       - file: firewall_rules_startup
       
 firewall_rules_startup:
-  file.append:
+  file.managed:
     - name: "/etc/rc2.d/S99iptables"
+    - user: root
+    - group: root
+    - mode: 755
     - context:
         rule_path: {{ firewall.get('rules_path') }}
-        interface: {{ salt['pillar.get']('firewall:interface', 'eth0') }}
-        forwarding: {{ salt['pillar.get']('firewall:rules:forwarding:enable', false) }}
-        forward_interfaces: {{ salt['pillar.get']('firewall:rules:forwarding:interfaces', {}) }}
     - source: salt://firewall/files/rc.d.iptables.jinja
     - template: jinja
 
