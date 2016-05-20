@@ -10,6 +10,12 @@ firewall:
 
   # Firewall rules
   rules:
+    forwarding:
+      enable: true
+      interfaces:
+        source: eth1
+        destination: eth0
+        source_network: '192.168.0.0/24'
     icmp:
       authorize: false
       whitelist:

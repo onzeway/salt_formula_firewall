@@ -37,4 +37,10 @@
 {%- if 'port' in service_rule %} --destination-port {{ service_rule.get('port') }}{% endif %} -j ACCEPT
 {% endfor %}
 
+{% if forwarding -%}
+-A FORWARD -o {{ forward_interfaces.get('destination', 'eth0') }} -i {{ forward_interfaces.get('source', 'eth1') }} -s {{ forward_interfaces.get('source_network', '0.0.0.0/0') }} -m conntrack --ctstate NEW -j ACCEPT
+-A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+-t nat -F POSTROUTING
+-t nat -A POSTROUTING -o {{ forward_interfaces.get('destination', 'eth0') }} -j MASQUERADE
+{% endif %}
 COMMIT
