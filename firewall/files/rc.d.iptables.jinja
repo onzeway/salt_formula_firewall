@@ -1,5 +1,49 @@
-#!/bin/sh -e
+#!/bin/sh
+#
+### BEGIN INIT INFO
+# Provides:          iptables-rules
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Should-Start:
+# Should-Stop:
+# Default-Start:     1 2 7
+# Default-Stop:      0 6
+# Short-Description: IP Tables Rules load
+# Description:
+### END INIT INFO
 
-/sbin/iptables-restore < {{ rule_path }}
+PATH=/sbin:/bin
+IPTABLE_RESTORE=/sbin/iptables-restore
+IPTABLE_SAVE=/sbin/iptables-save
+NAME=iptables-rules
 
-exit 0
+test -x $IPTABLE_RESTORE || exit 0
+
+RULES_DESC={{ rule_path }}
+
+. /lib/lsb/init-functions
+
+case "$1" in
+start)
+        $IPTABLE_RESTORE < $RULES_DESC
+        ;;
+stop)
+        $IPTABLE_RESTORE < $RULES_DESC
+        ;;
+restart|force-reload)
+        $IPTABLE_RESTORE < $RULES_DESC
+        ;;
+try-restart)
+        $IPTABLE_RESTORE < $RULES_DESC
+        ;;
+reload)
+        $IPTABLE_RESTORE < $RULES_DESC
+        ;;
+status)
+        $IPTABLE_SAVE || exit $?
+        ;;
+*)
+        log_failure_msg "Usage: /etc/init.d/iptables-rules {start|stop|restart|try-restart|force-reload|status}"
+        exit 1
+        ;;
+esac

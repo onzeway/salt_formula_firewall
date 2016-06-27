@@ -12,19 +12,12 @@ firewall_rules:
         forward_interfaces: {{ salt['pillar.get']('firewall:rules:forwarding:interfaces', {}) }}
     - source: salt://firewall/files/iptables.jinja
     - template: jinja
-
-firewall_rules_apply:
-  cmd.wait:
-    - name: "iptables-restore < {{ firewall.get('rules_path') }}"
-    - watch:
-      - file: firewall_rules
-    - require:
-      - pkg: firewall
-      - file: firewall_rules_startup
+    - watch_in:
+      - service: firewall_service
       
-firewall_rules_startup:
+firewall_service:
   file.managed:
-    - name: "/etc/rc2.d/S99iptables"
+    - name: "/etc/init.d/iptables-rules"
     - user: root
     - group: root
     - mode: 755
@@ -32,6 +25,12 @@ firewall_rules_startup:
         rule_path: {{ firewall.get('rules_path') }}
     - source: salt://firewall/files/rc.d.iptables.jinja
     - template: jinja
+  service.running:
+    - name: iptables-rules
+    - enable: True
+    - reload: True
+    - watch:
+      - file: firewall_rules
 
 {%- if salt['pillar.get']('firewall:rules:forwarding:enable', false) %}
 {%- set forward_value=1 %}

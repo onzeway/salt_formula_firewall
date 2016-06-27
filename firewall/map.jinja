@@ -5,13 +5,11 @@ that differ from whats in defaults.yaml
 {% set firewall = salt['grains.filter_by']({
     'Debian': {
       'package': 'iptables',
-      'rules_path': '/etc/network/iptables.up.rules',
-      'active_reboot_path': '/etc/network/if-pre-up.d/iptables'
+      'rules_path': '/etc/network/iptables.up.rules'
     }
     ,'RedHat': {
       'package': 'iptables',
-      'rules_path': '/etc/sysconfig/iptables',
-      'active_reboot_path': '/sbin/ifup-local'
+      'rules_path': '/etc/sysconfig/iptables'
     }
   }
   , grain="os_family"
