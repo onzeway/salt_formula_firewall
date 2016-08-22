@@ -25,18 +25,15 @@ firewall_service:
         rule_path: {{ firewall.get('rules_path') }}
     - source: salt://firewall/files/rc.d.iptables.jinja
     - template: jinja
-  service.running:
+  service.enabled:
     - name: iptables-rules
-    - enable: True
-    - reload: True
+    - require:
+      - file: firewall_service
     - watch:
       - file: firewall_rules
 
 {%- if salt['pillar.get']('firewall:rules:forwarding:enable', false) %}
 {%- set forward_value=1 %}
-{%- else %}
-{%- set forward_value=0 %}
-{%- endif %}
 
 net.ipv4.conf.default.forwarding:
   sysctl.present:
@@ -49,3 +46,5 @@ net.ipv4.conf.all.forwarding:
 /proc/sys/net/ipv4/ip_forward:
   file.managed:
     - contents: {{ forward_value }}
+
+{%- endif %}
