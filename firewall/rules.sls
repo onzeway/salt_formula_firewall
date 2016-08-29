@@ -25,8 +25,10 @@ firewall_service:
         rule_path: {{ firewall.get('rules_path') }}
     - source: salt://firewall/files/rc.d.iptables.jinja
     - template: jinja
-  service.enabled:
+  service.running:
     - name: iptables-rules
+    - enable: True
+    - reload: True
     - require:
       - file: firewall_service
     - watch:
